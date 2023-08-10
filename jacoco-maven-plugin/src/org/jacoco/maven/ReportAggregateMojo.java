@@ -111,16 +111,18 @@ public class ReportAggregateMojo extends AbstractReportMojo {
 	void loadExecutionData(final ReportSupport support) throws IOException {
 		// https://issues.apache.org/jira/browse/MNG-5440
 		if (dataFileIncludes == null) {
-			dataFileIncludes = Arrays.asList("target/*.exec");
+			dataFileIncludes = Arrays.asList("*.exec");
 		}
 
 		final FileFilter filter = new FileFilter(dataFileIncludes,
 				dataFileExcludes);
-		loadExecutionData(support, filter, project.getBasedir());
+		loadExecutionData(support, filter,
+				new File(project.getBuild().getDirectory()));
 		for (final MavenProject dependency : findDependencies(
 				Artifact.SCOPE_COMPILE, Artifact.SCOPE_RUNTIME,
 				Artifact.SCOPE_PROVIDED, Artifact.SCOPE_TEST)) {
-			loadExecutionData(support, filter, dependency.getBasedir());
+			loadExecutionData(support, filter,
+					new File(dependency.getBuild().getDirectory()));
 		}
 	}
 
