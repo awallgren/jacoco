@@ -121,8 +121,12 @@ public class ReportAggregateMojo extends AbstractReportMojo {
 		for (final MavenProject dependency : findDependencies(
 				Artifact.SCOPE_COMPILE, Artifact.SCOPE_RUNTIME,
 				Artifact.SCOPE_PROVIDED, Artifact.SCOPE_TEST)) {
-			loadExecutionData(support, filter,
-					new File(dependency.getBuild().getDirectory()));
+			File basedir = new File(dependency.getBuild().getDirectory());
+			if (basedir.isDirectory()) {
+				loadExecutionData(support, filter, basedir);
+			} else {
+				getLog().info("basedir " + basedir + " does not exist");
+			}
 		}
 	}
 
